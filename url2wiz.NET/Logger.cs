@@ -18,7 +18,6 @@ namespace url2wiz.NET
         {
             fileStream = new FileStream(Path.Combine(path, FileName), FileMode.Append);
             streamWrite = new StreamWriter(fileStream);
-            
         }
 
         public void Log(string message)

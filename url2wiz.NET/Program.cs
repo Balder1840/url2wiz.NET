@@ -195,7 +195,7 @@ example:
                         }
                     }
                     Thread.Sleep(Interval);
-                    //Log failed request
+                    //Log failed requests
                     if(LogFailedUrl)
                     {
                         logger.Log(key, urlToAdd);
