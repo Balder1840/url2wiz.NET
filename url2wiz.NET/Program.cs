@@ -62,7 +62,7 @@ example:
                     ExtractUrlShortcutPath(RootDirectory);
                     if (Urls.GetAllValues().Count() > 0)
                     {
-                        SendRequests(Logger logger);
+                        SendRequests(logger);
                     }
                 }
             }
