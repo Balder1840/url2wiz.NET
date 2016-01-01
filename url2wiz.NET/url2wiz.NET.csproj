@@ -41,7 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandLineParser.cs" />
     <Compile Include="DateTimeExtension.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="NameValueCollectionExtension.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
