@@ -2,7 +2,7 @@
 a tool to transfer url(s) to wiz note
 
 Usage:
--D:	the root directory of your internate shortcuts, 
+-D:	the root directory of your internate shortcuts, <br />
 	default as the same directory of the tool
 -U:	your wiz email ID, mandatory
 -S:	interval of each request to wiz API, default as 20s, unit as seconds
