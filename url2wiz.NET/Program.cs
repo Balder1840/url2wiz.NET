@@ -20,8 +20,8 @@ namespace url2wiz.NET
         private static NameValueCollection Urls = new NameValueCollection();
         private static readonly string URLStart = "URL=";
         private static bool LogFailedUrl = true;//-L
-        private static string Url = "";//-W
-        private static string UrlFile = "";//-F
+        private static string Url = string.Empty;//-W
+        private static string UrlFile = string.Empty;//-F
         private static string User = string.Empty;
         private static readonly string RequestDataFormat = "url={0}&folder={1}&user={2}&content-only=true";
         private static readonly string RequestUrlFormat = @"http://note.wiz.cn/api/gather/add?type=url2wiz&data={0}&{1}";
@@ -35,7 +35,7 @@ namespace url2wiz.NET
 -L:	log those failed to request, save to the same directory as -D specified
 	default as true
 -I:	if ignore the repeat urls, default as true
--W:	single web url to add
+-W:	single web url to add, added to /My Notes/ in wiz
 -F:	a file contains the url to add, format as [path(\t)url].
 	this will be usefull when adding the failed ones
 -H/-?	Help
@@ -60,6 +60,8 @@ example:
                 using (Logger logger = new Logger(RootDirectory))
                 {
                     ExtractUrlShortcutPath(RootDirectory);
+                    ExtractUrlFromCommandLine();
+                    ExtractUrlFromFile();
                     if (Urls.GetAllValues().Count() > 0)
                     {
                         SendRequests(logger);
@@ -109,7 +111,7 @@ example:
             }
             if(string.IsNullOrEmpty(clp["U"]))
             {
-                Console.WriteLine("please specify -U");
+                Console.WriteLine("please specify your user id with -U");
                 Console.WriteLine("for more help, plesae use -H/-?");
                 return false;
             }
@@ -134,6 +136,10 @@ example:
             else
             {
                 folder = directory.Substring(RootDirectory.Length-1).Replace(@"\", "/");
+                if(!folder.EndsWith(@"\"))
+                {
+                    folder += @"\";
+                }
             }
 
             foreach (string strFile in files)
@@ -146,7 +152,10 @@ example:
                         if (lineContent.StartsWith(URLStart, StringComparison.OrdinalIgnoreCase))
                         {
                             lineContent = lineContent.Substring(URLStart.Length);
-                            var values = Urls.GetAllValues();
+                            if (string.IsNullOrEmpty(lineContent))
+                            {
+                                continue;
+                            }
                             if (IgnoreRepeat && Urls.GetAllValues().Contains(lineContent))
                             {
                                 break;
@@ -162,6 +171,50 @@ example:
             foreach (var dir in Directory.GetDirectories(directory, "*", SearchOption.TopDirectoryOnly))
             {
                 ExtractUrlShortcutPath(dir);
+            }
+        }
+
+        static void ExtractUrlFromCommandLine()
+        {
+            if(!string.IsNullOrEmpty(Url) && Url.StartsWith("http",StringComparison.OrdinalIgnoreCase))
+            {
+                if(IgnoreRepeat && Urls.GetAllValues().Contains(Url))
+                { 
+                    Urls.Add(@"/My Notes/", Url);
+                }
+            }
+        }
+
+        static void ExtractUrlFromFile()
+        {
+            if(File.Exists(UrlFile))
+            {
+                using (FileStream fs = new FileStream(UrlFile, FileMode.Open, FileAccess.Read))
+                {
+                    using (StreamReader sr = new StreamReader(fs))
+                    {
+                        while(!sr.EndOfStream)
+                        {
+                            string lineContent = sr.ReadLine();
+                            if (lineContent.StartsWith(URLStart, StringComparison.OrdinalIgnoreCase))
+                            {
+                                lineContent = lineContent.Substring(URLStart.Length);
+                                if(string.IsNullOrEmpty(lineContent))
+                                {
+                                    continue;
+                                }
+                                var pathAndUrl = lineContent.Split(new char[] { '\t' });
+                                if (IgnoreRepeat && pathAndUrl.Length==2 && Urls.GetAllValues().Contains(pathAndUrl[1]))
+                                {
+                                    continue;
+                                }
+
+                                Urls.Add(pathAndUrl[0], pathAndUrl[1]);
+                                continue;
+                            }
+                        }
+                    }
+                }
             }
         }
 

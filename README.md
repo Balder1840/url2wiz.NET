@@ -9,7 +9,7 @@ a tool to transfer url(s) to wiz note
 	-L:	log those url(s) failed to request, save to the same directory as -D specified,
 		default as true
 	-I:	ignore the repeat urls or not, default as true
-	-W:	single web url to add
+	-W:	single web url to add, added to /My Notes/ in wiz
 	-F:	a file contains the url to add, format as [path(\t)url].
 		this will be usefull when adding the failed ones
 	-H/-?	Help
