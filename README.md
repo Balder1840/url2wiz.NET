@@ -1,5 +1,5 @@
 # url2wiz.NET
-a tool to transfer url(s) to wiz note
+a tool to translate url(s) to wiz note
 
 ### Usage:
 	-D: the root directory of your internet shortcuts,
